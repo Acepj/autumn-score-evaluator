@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autumn Score Evaluator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  
+  <span class="leaf leaf-1" aria-hidden="true">🍁</span>
+  <span class="leaf leaf-2" aria-hidden="true">🍂</span>
+  <span class="leaf leaf-3" aria-hidden="true">🍂</span>
+  <span class="leaf leaf-4" aria-hidden="true">🍁</span>
+
+  
+  <main class="card">
+    <p class="eyebrow">Student Score Evaluation</p>
+    <h1 class="title">Autumn Score Evaluator</h1>
+    <p class="subtitle">A simple score evaluation program with a warm autumn touch.</p>
+
+    <div class="divider" aria-hidden="true">🍂</div>
+
+    
+    <div class="result" id="resultCard" hidden>
+      <h2 class="result-heading">Evaluation Result</h2>
+
+      
+      <div id="resultRows">
+        <div class="result-row">
+          <span class="result-label">Name:</span>
+          <span class="result-value" id="resultName">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Score:</span>
+          <span class="result-value" id="resultScore">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Remark:</span>
+          <span class="result-value" id="resultRemark">—</span>
+        </div>
+      </div>
+
+      
+      <p class="result-message" id="resultMessage" hidden>Evaluation cancelled.</p>
+    </div>
+
+    <button class="restart-button" type="button" onclick="window.location.reload()">
+      Evaluate another score
+    </button>
+  </main>
+
+  
+  <script src="script.js"></script>
+</body>
+</html>
