@@ -1,9 +1,27 @@
+/* =========================================================
+   AUTUMN SCORE EVALUATOR — script.js
+   ---------------------------------------------------------
+   Program flow:
+     1. Welcome message with alert()
+     2. Ask for the student's name with prompt()
+     3. Ask for the score with prompt()
+     4. Ask if the user wants to continue with confirm()
+     5. Evaluate the score with the evaluateScore() function
+     6. Show the result on the webpage
+   ========================================================= */
 
+/* ---------------------------------------------------------
+   STEP 1 — Welcome message
+   --------------------------------------------------------- */
 alert("Welcome to the Autumn Score Evaluator!");
 
-
+/* ---------------------------------------------------------
+   STEP 2 — Ask for the student's name
+   --------------------------------------------------------- */
 let studentName = prompt("Please enter your name:");
 
+// Validation: empty input for the name (nothing typed, or "Cancel" pressed).
+// prompt() returns null when the user presses "Cancel".
 if (studentName === null || studentName.trim() === "") {
   alert('The name cannot be empty. We will use "Unknown Student" instead.');
   studentName = "Unknown Student";
@@ -11,15 +29,27 @@ if (studentName === null || studentName.trim() === "") {
   studentName = studentName.trim();
 }
 
-
+/* ---------------------------------------------------------
+   STEP 3 — Ask for the score
+   --------------------------------------------------------- */
 let scoreInput = prompt("Hello " + studentName + "! Please enter your score (0 - 100):");
+
+/* ---------------------------------------------------------
+   STEP 4 — Ask if the user wants to continue
+   --------------------------------------------------------- */
 let wantsToContinue = confirm("Do you want to continue?");
 
-
+/* ---------------------------------------------------------
+   STEP 5 — Show the result on the webpage
+   --------------------------------------------------------- */
 if (wantsToContinue === false) {
+  // The user pressed "Cancel": do not show a score result at all.
   showCancelledMessage();
 } else {
+  // The user pressed "OK": evaluate the score and show the result.
   const remark = evaluateScore(scoreInput);
+
+  // If the score box was left empty, show "(empty)" on the page.
   let scoreText = "(empty)";
   if (scoreInput !== null && scoreInput.trim() !== "") {
     scoreText = scoreInput.trim();
@@ -28,39 +58,82 @@ if (wantsToContinue === false) {
   showResult(studentName, scoreText, remark);
 }
 
+
+/* =========================================================
+   FUNCTIONS
+   (Function declarations are "hoisted", so the code above can
+    already call them even though they are written down here.)
+   ========================================================= */
+
+/**
+ * Evaluates a score and returns the matching remark.
+ *
+ * Validation — every one of these returns "Invalid score":
+ *   - empty input  (nothing typed, or "Cancel" was pressed)
+ *   - non-numeric  (for example "abc")
+ *   - zero         (0)
+ *   - negative     (-10)
+ *   - beyond 100   (105)
+ *
+ * Score guide:
+ *   90 - 100  ->  "Excellent"
+ *   75 - 89   ->  "Passed"
+ *   1  - 74   ->  "Failed"
+ *
+ * @param {string|null} score - the raw text typed in the prompt()
+ * @returns {string} the remark for the score
+ */
 function evaluateScore(score) {
-  
+  // Validation 1: EMPTY input (null means "Cancel" was pressed)
   if (score === null || score.trim() === "") {
     return "Invalid score";
   }
 
-
+  // Convert the text into a real number so we can compare it.
+  // Number("abc") becomes NaN (Not a Number), which we catch below.
   const numberScore = Number(score);
 
-
-  if (Number.isNaN(numberScore) || numberScore <= 0 || numberScore > 100) {
+  // Validation 2: INVALID input (not a number, like "abc" or "12abc")
+  if (Number.isNaN(numberScore)) {
     return "Invalid score";
   }
 
+  // Validation 3: ZERO or NEGATIVE input (0, -10, ...)
+  if (numberScore <= 0) {
+    return "Invalid score";
+  }
 
+  // Validation 4: a score BEYOND 100 (for example 105)
+  if (numberScore > 100) {
+    return "Invalid score";
+  }
+
+  // Conditional branching: decide the remark
   if (numberScore >= 90) {
-    return "Excellent"; 
+    return "Excellent"; // 90 - 100
   } else if (numberScore >= 75) {
-    return "Passed"; 
+    return "Passed"; // 75 - 89
   } else {
-    return "Failed"; 
+    return "Failed"; // 1 - 74
   }
 }
 
+/**
+ * Displays the final result inside the result panel on the webpage.
+ *
+ * @param {string} name      - the student's name
+ * @param {string} scoreText - the entered score, as text
+ * @param {string} remark    - "Excellent", "Passed", "Failed" or "Invalid score"
+ */
 function showResult(name, scoreText, remark) {
-  
+  // Fill in the three result lines
   document.getElementById("resultName").textContent = name;
   document.getElementById("resultScore").textContent = scoreText;
 
   const remarkElement = document.getElementById("resultRemark");
   remarkElement.textContent = remark;
 
-  
+  // Give the remark its own autumn colour: every remark has a CSS class
   const remarkClasses = {
     "Excellent": "remark-excellent",
     "Passed": "remark-passed",
@@ -69,20 +142,23 @@ function showResult(name, scoreText, remark) {
   };
   remarkElement.classList.add(remarkClasses[remark]);
 
-  
+  // Show the score lines and hide the "cancelled" message
   document.getElementById("resultRows").hidden = false;
   document.getElementById("resultMessage").hidden = true;
 
-  
+  // Reveal the result panel
   document.getElementById("resultCard").hidden = false;
 }
 
-
+/**
+ * Shows a simple "Evaluation cancelled." message on the webpage.
+ * (Used when the user presses "Cancel" in the confirm() dialog.)
+ */
 function showCancelledMessage() {
-  
+  // Hide the score lines and show the cancel message instead
   document.getElementById("resultRows").hidden = true;
   document.getElementById("resultMessage").hidden = false;
 
-  
+  // Reveal the result panel
   document.getElementById("resultCard").hidden = false;
 }

@@ -19,6 +19,7 @@ with a minimalist autumn theme.
 | Anything else      | Invalid score |
 
 "Anything else" includes: empty input, non-numeric input, `0`, negative numbers, and scores above 100.
+If the name is left empty, the page shows **Unknown Student** instead.
 
 ## Files
 
