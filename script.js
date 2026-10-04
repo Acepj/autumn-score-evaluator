@@ -68,7 +68,7 @@ if (wantsToContinue === false) {
 /**
  * Evaluates a score and returns the matching remark.
  *
- * Validation — every one of these returns "Invalid score":
+ * Validation — every one of these returns an "Invalid ..." message:
  *   - empty input  (nothing typed, or "Cancel" was pressed)
  *   - non-numeric  (for example "abc")
  *   - zero         (0)
@@ -81,31 +81,30 @@ if (wantsToContinue === false) {
  *   1  - 74   ->  "Failed"
  *
  * @param {string|null} score - the raw text typed in the prompt()
- * @returns {string} the remark for the score
+ * @returns {string} the remark, or an "Invalid ..." message for bad input
  */
 function evaluateScore(score) {
   // Validation 1: EMPTY input (null means "Cancel" was pressed)
   if (score === null || score.trim() === "") {
-    return "Invalid score";
+    return "Invalid Input. No name or score entered.";
   }
 
-  // Convert the text into a real number so we can compare it.
-  // Number("abc") becomes NaN (Not a Number), which we catch below.
   const numberScore = Number(score);
 
-  // Validation 2: INVALID input (not a number, like "abc" or "12abc")
   if (Number.isNaN(numberScore)) {
-    return "Invalid score";
+    return "Invalid Input. Please enter a number.";
   }
 
-  // Validation 3: ZERO or NEGATIVE input (0, -10, ...)
-  if (numberScore <= 0) {
-    return "Invalid score";
+  if (numberScore < 0) {
+    return "Invalid Input. The score cannot be negative.";
   }
 
-  // Validation 4: a score BEYOND 100 (for example 105)
+  if (numberScore == 0) {
+    return "Invalid Score. No score entered.";
+  }
+
   if (numberScore > 100) {
-    return "Invalid score";
+    return "Invalid Score. The score cannot be higher than 100.";
   }
 
   // Conditional branching: decide the remark
@@ -123,7 +122,8 @@ function evaluateScore(score) {
  *
  * @param {string} name      - the student's name
  * @param {string} scoreText - the entered score, as text
- * @param {string} remark    - "Excellent", "Passed", "Failed" or "Invalid score"
+ * @param {string} remark    - "Excellent", "Passed", "Failed",
+ *                             or an "Invalid ..." message
  */
 function showResult(name, scoreText, remark) {
   // Fill in the three result lines
@@ -133,14 +133,18 @@ function showResult(name, scoreText, remark) {
   const remarkElement = document.getElementById("resultRemark");
   remarkElement.textContent = remark;
 
-  // Give the remark its own autumn colour: every remark has a CSS class
-  const remarkClasses = {
-    "Excellent": "remark-excellent",
-    "Passed": "remark-passed",
-    "Failed": "remark-failed",
-    "Invalid score": "remark-invalid"
-  };
-  remarkElement.classList.add(remarkClasses[remark]);
+  // Give the remark its own autumn colour: every remark has a CSS class.
+  // Anything that is not "Excellent", "Passed" or "Failed" is an
+  // invalid score, so it gets the invalid colour instead.
+  if (remark === "Excellent") {
+    remarkElement.classList.add("remark-excellent");
+  } else if (remark === "Passed") {
+    remarkElement.classList.add("remark-passed");
+  } else if (remark === "Failed") {
+    remarkElement.classList.add("remark-failed");
+  } else {
+    remarkElement.classList.add("remark-invalid");
+  }
 
   // Show the score lines and hide the "cancelled" message
   document.getElementById("resultRows").hidden = false;
